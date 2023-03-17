@@ -1,7 +1,10 @@
 // 設定安全碼
 const config = { 
-  channelAccessToken: "yOJ6VmHfUtTGS7P5A+fJTWN5ldhbWMm2b3DMudzYtDYRxwBR+z+lvdm0ipFprjMV8RQej3i1eZHemk3IfJCwoxcr+pmp3iiNvKyrpELllDnwthB1UDpRMu764wDROyn0Fgn+wzIX4YWL3LEuQ0j2ngdB04t89/1O/w1cDnyilFU=",
-  channelSecret: "298d107a73807ca27aa947cd79f55703" 
+  channelAccessToken: "",
+  channelSecret: "",
+  fireport:"1Wu41nX_rqNy3J9A5V0iZQYacCyEISdp1", //消防栓csv檔案 = https://drive.google.com/file/d/1Wu41nX_rqNy3J9A5V0iZQYacCyEISdp1/view?usp=share_link
+  sendimg:""  //傳送圖片壓日期 權限csv檔案 (可空白)
+
 }
 const porttype =["地上式單口式","地上打倒安全式(單口)","地上式雙口式","地上打倒安全式(雙口)","地下式單口式","地下式雙口式"]
 
@@ -352,7 +355,7 @@ let changepic=async (event) =>{
 
 
 let gopic=async (event) =>{
-  let testfile=await  DriveApp.getFileById("19usCh247EOl7Ho8Qhwmx7bTYzV5y4gMD");
+  let testfile=await  DriveApp.getFileById(config.sendimg);
   var fileBlob =await testfile.getBlob();
   var alldata =await fileBlob.getDataAsString().split("\r\n");
   
@@ -372,7 +375,7 @@ let gopic=async (event) =>{
 //再取得更多
 let showmore = async (event,x,y)=>{
 
-  let testfile= DriveApp.getFileById("1Wu41nX_rqNy3J9A5V0iZQYacCyEISdp1");
+  let testfile= DriveApp.getFileById(config.fireport);
   var fileBlob = testfile.getBlob();
   var alldata = fileBlob.getDataAsString().split("\r\n");
   let longlist=[[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""]];
@@ -998,7 +1001,7 @@ let showmap = (event,x,y,name,type)=>{
 //取得最近十筆
 let getnear =async (replytoken,x,y)=>{
 
-  let testfile=await  DriveApp.getFileById("1Wu41nX_rqNy3J9A5V0iZQYacCyEISdp1");
+  let testfile=await  DriveApp.getFileById(config.fireport);
   var fileBlob =await testfile.getBlob();
   var alldata =await fileBlob.getDataAsString().split("\r\n");
   let longlist=[[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""]];
