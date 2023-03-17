@@ -10,7 +10,14 @@ line bot 利用 google app script 製作消防協助小工具
 #### [DocsServiceApp](https://github.com/tanaikech/DocsServiceApp) :`108j6x_ZX544wEhGkgddFYM6Ie09edDqXaFwnW3RVFQCLHw_mEueqUHTW`
 ![image](https://user-images.githubusercontent.com/8066463/225524183-9f7bc0af-5c81-4355-8ba6-fbd9ee8d3505.png)
 
+填入圖片傳送開關檔案
+![image](https://user-images.githubusercontent.com/8066463/225800213-ea4e68d7-23b5-4183-8985-af182c0060e9.png)
+![image](https://user-images.githubusercontent.com/8066463/225799437-836e0b45-45d3-4cf3-a0bf-f29eb6b4ee97.png)
+![image](https://user-images.githubusercontent.com/8066463/225799531-832e866b-fc2c-4083-84cd-295e928ca327.png)
+![image](https://user-images.githubusercontent.com/8066463/225799806-9005041f-c16d-4117-9706-4e0b810d3450.png)
+
 --------------
+### 功能說明
 
 #### 1. 傳送圖片(檔案形式) 回傳包含EXIF浮水印的圖片
 ![image](https://user-images.githubusercontent.com/8066463/225362448-e7a62533-2a4d-4870-a308-d36b31c08924.png)
