@@ -18,6 +18,8 @@ line bot 利用 google app script 製作消防協助小工具
 
 --------------
 ### 功能說明
+![image](https://user-images.githubusercontent.com/8066463/227790805-2d89f2cd-ac47-4eb2-aa9a-6cecb6e82a0c.png)
+
 
 #### 1. 傳送圖片(檔案形式) 回傳包含EXIF浮水印的圖片
 ![image](https://user-images.githubusercontent.com/8066463/225362448-e7a62533-2a4d-4870-a308-d36b31c08924.png)
@@ -32,4 +34,8 @@ line bot 利用 google app script 製作消防協助小工具
 #### 3. 傳送圖片 回傳當時時間浮水印的圖片
 ![image](https://user-images.githubusercontent.com/8066463/225679787-cd2db9b2-aa4f-4b9d-8def-16b9ba310b79.png)
 ![image](https://user-images.githubusercontent.com/8066463/225679478-140d8e26-473d-4a6d-ab50-20c55bdd09b7.png)
+
+#### 4. 傳送TWD97 或經緯度 回傳查詢消防栓或地圖
+![image](https://user-images.githubusercontent.com/8066463/227790914-59d828fb-2ae1-4f23-96ac-8ccdead4e2e7.png)
+![image](https://user-images.githubusercontent.com/8066463/227790940-84fb58b3-a23b-4d2c-976f-c8a85ea447fc.png)
 
