@@ -40,6 +40,13 @@ function doPost(e) {
     {
        showtime (event);
     }
+    if (message.type == "text" && message.text.split(' ')[0].toLocaleLowerCase() === 'twd97'){
+      let getxy=twd97_to_latlng(message.text.split(' ')[1],message.text.split(' ')[2]);
+      showmap (event,getxy.lat,getxy.lng,"TWD97："+message.text.split(' ')[1]+","+message.text.split(' ')[2]+"\n"+"經緯度："+getxy.lat+","+getxy.lng,"標記");
+    }
+    if (message.type == "text" && message.text.split(' ')[0] === '經緯'){
+      showmap (event,message.text.split(' ')[1],message.text.split(' ')[2],"經緯度："+message.text.split(' ')[1]+","+message.text.split(' ')[2],"標記");
+    }
     if (message.type == "location")
     {
       getnear(reToken,message.latitude,message.longitude);
@@ -304,7 +311,7 @@ let auther = (event) =>{
     信箱:wl00161839@gmail.com
     ` }]);
 }
- 
+ //修改浮水印權限
 let changepic=async (event) =>{
   let testfile=await  DriveApp.getFileById("19usCh247EOl7Ho8Qhwmx7bTYzV5y4gMD");
   var fileBlob =await testfile.getBlob();
@@ -353,7 +360,7 @@ let changepic=async (event) =>{
   }
 }
 
-
+//確認權限
 let gopic=async (event) =>{
   let testfile=await  DriveApp.getFileById(config.sendimg);
   var fileBlob =await testfile.getBlob();
@@ -1814,6 +1821,7 @@ async function  getmessagecontent(event,messageId){
   Drive.Files.remove(file2.getId());
   Drive.Files.remove(folder.getId());
 }
+
 
 
 
