@@ -42,11 +42,25 @@ function doPost(e) {
     }
     if (message.type == "text" && message.text.split(' ')[0].toLocaleLowerCase() === 'twd97'){
       let getxy=twd97_to_latlng(message.text.split(' ')[1],message.text.split(' ')[2]);
-      showmap (event,getxy.lat,getxy.lng,"TWD97："+message.text.split(' ')[1]+","+message.text.split(' ')[2]+"\n"+"經緯度："+getxy.lat+","+getxy.lng,"標記");
+      getmessandlocation(event,getxy.lat,getxy.lng);
+
     }
     if (message.type == "text" && message.text.split(' ')[0] === '經緯'){
-      showmap (event,message.text.split(' ')[1],message.text.split(' ')[2],"經緯度："+message.text.split(' ')[1]+","+message.text.split(' ')[2],"標記");
+      if(message.text.split(' ')[1].split("度").length>1){
+        let first1 = message.text.split(' ')[1].split("度")[0];
+        let second1 = message.text.split(' ')[1].split("度")[1].split("分")[0];
+        let third1 = message.text.split(' ')[1].split("度")[1].split("分")[1].split("秒")[0];
+        let lng = (parseFloat(third1)/60+parseFloat(second1))/60+parseFloat(first1);
+        let first2 = message.text.split(' ')[2].split("度")[0];
+        let second2 = message.text.split(' ')[2].split("度")[1].split("分")[0];
+        let third2 = message.text.split(' ')[2].split("度")[1].split("分")[1].split("秒")[0];
+        let lat = (parseFloat(third2)/60+parseFloat(second2))/60+parseFloat(first2);
+        getmessandlocation(event,lat,lng);
+      }else{
+        getmessandlocation(event,message.text.split(' ')[1],message.text.split(' ')[2]);
+      }
     }
+    
     if (message.type == "location")
     {
       getnear(reToken,message.latitude,message.longitude);
@@ -61,6 +75,11 @@ function doPost(e) {
   }
   if (event.type === "postback"){
     const postback = event.postback;
+
+    if (postback.data.split("&")[0]=== "getfirst"){
+      getnear(reToken,postback.data.split("&")[1],postback.data.split("&")[2]);
+    }
+    
     if (postback.data.split("&")[0]=== "more"){
       showmore(event,postback.data.split("&")[1],postback.data.split("&")[2]);
     }
@@ -289,9 +308,20 @@ let info = (event) => {
       若無 EXIF 則壓目前時間
       (限制JPEG、PNG)
 
-    先啟動圖片壓時間再傳 [圖片]
-      只壓目前時間
+    先於「維護」啟動圖片壓時間
+    直接傳 [圖片]
+      壓目前時間
 
+    輸入[TWD 0000.00 0000.00]
+      取得地圖座標
+
+    輸入[經緯 23.0000 120.0000]
+      取得地圖座標
+
+    輸入[經緯 120度00分00秒 23度00分00秒]
+      取得地圖座標
+
+      
     或輸入   [冰塊查詢]
     ` }]);
 }
@@ -1822,7 +1852,112 @@ async function  getmessagecontent(event,messageId){
   Drive.Files.remove(folder.getId());
 }
 
+function getmessandlocation(event,lat,lng){
+  botEcho(event.replyToken, [{
+        "type": "flex",
+        "altText": "選擇",
+        "contents": { "type": "carousel",
+          "contents": [
+            {
+              "type": "bubble",
+              "size": "nano",
+              "header": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                  {
+                    "type": "text",
+                    "text": "取得消防栓",
+                    "color": "#ffffff",
+                    "align": "start",
+                    "size": "md",
+                    "gravity": "center"
+                  }
+                ],
+                "backgroundColor": "#27D190",
+                "paddingTop": "19px",
+                "paddingAll": "12px",
+                "paddingBottom": "16px"
+              },
+              "body": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                  {
+                    "type": "box",
+                    "layout": "horizontal",
+                    "contents": [
+                      {
+                        "type": "button",
+                        "height": "sm",
+                        "action": {
+                          "type": "postback",
+                          "label": "取得消防栓",
+                          "data": `getfirst&${lat}&${lng}`
+                        },
+                        "style": "secondary"
+                      }
+                    ],
+                    "flex": 1
+                  }
+                ],
+                "spacing": "md",
+                "paddingAll": "12px"
+              },
+              "styles": { "footer": { "separator": false } }
+            },{
+              "type": "bubble",
+              "size": "nano",
+              "header": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                  {
+                    "type": "text",
+                    "text": "地圖",
+                    "color": "#ffffff",
+                    "align": "start",
+                    "size": "md",
+                    "gravity": "center"
+                  }
+                ],
+                "backgroundColor": "#2593FA",
+                "paddingTop": "19px",
+                "paddingAll": "12px",
+                "paddingBottom": "16px"
+              },
+              "body": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                  {
+                    "type": "box",
+                    "layout": "horizontal",
+                    "contents": [
+                      {
+                        "type": "button",
+                        "height": "sm",
+                        "action": {
+                          "type": "postback",
+                          "label": "顯示地圖",
+                          "data": `消防栓地圖&${lat}&${lng}&標記&經緯度：${lat.toString().substring(0,8)} , ${lng.toString().substring(0,9)}`
+                        },
+                        "style": "secondary"
+                      }
+                    ],
+                    "flex": 1
+                  }
+                ],
+                "spacing": "md",
+                "paddingAll": "12px"
+              },
+              "styles": { "footer": { "separator": false } }
+            }
+            
+          ] }
+        }]);
 
+}
 
 
 
