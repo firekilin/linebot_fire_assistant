@@ -2,7 +2,7 @@
 
 line bot 利用 google app script 製作消防協助小工具
 
-### [line機器人](https://line.me/R/ti/p/%40125rxjzk)
+### [line機器人](https://liff.line.me/1645278921-kWRPP32q/?accountId=411dabhm)
 ### [拿錢砸我](https://p.ecpay.com.tw/8E29ABF)
 
 --------------
