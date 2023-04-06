@@ -1814,18 +1814,33 @@ async function  getmessagecontent(event,messageId){
   const s = SlidesApp.openById(presentationId);
   const slide = s.getSlides()[0];
   slide.insertImage(imageBlob);
-  slide
-    .insertTextBox(locationtext.text, locationtext.left, locationtext.top, locationtext.width,  locationtext.height)
+    //加陰影
+   slide
+    .insertTextBox(timetext.text, timetext.left+2, timetext.top+2, timetext.width,  timetext.height)
     .getText()
     .getTextStyle()
-    .setForegroundColor(255,255,255)
+    .setForegroundColor(150,150,150)
+    .setFontSize(timetext.fontSize);
+  slide
+    .insertTextBox(locationtext.text, locationtext.left+2, locationtext.top+2, locationtext.width,  locationtext.height)
+    .getText()
+    .getTextStyle()
+    .setForegroundColor(150,150,150)
     .setFontSize(locationtext.fontSize);
+  //正式
+ 
   slide
     .insertTextBox(timetext.text, timetext.left, timetext.top, timetext.width,  timetext.height)
     .getText()
     .getTextStyle()
     .setForegroundColor(255,255,255)
     .setFontSize(timetext.fontSize);
+  slide
+    .insertTextBox(locationtext.text, locationtext.left, locationtext.top, locationtext.width,  locationtext.height)
+    .getText()
+    .getTextStyle()
+    .setForegroundColor(255,255,255)
+    .setFontSize(locationtext.fontSize);
   s.saveAndClose();
 
   const obj = Slides.Presentations.Pages.getThumbnail(
