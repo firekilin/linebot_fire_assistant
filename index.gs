@@ -1778,7 +1778,12 @@ async function  getmessagecontent(event,messageId){
   let photo_date="";
   if(typeof file.imageMediaMetadata.location==='undefined'){
     let nowtime=new Date();
-    photo_date=nowtime.getFullYear()+"-"+(nowtime.getMonth()+1)+"-"+nowtime.getDate()+" "+nowtime.getHours()+":"+nowtime.getMinutes()+":"+nowtime.getSeconds();
+    photo_date=(nowtime.getFullYear()+"-"+
+      ((parseInt(nowtime.getMonth())+1)<10?"0"+(parseInt(nowtime.getMonth())+1):(parseInt(nowtime.getMonth())+1))+"-"+
+      (parseInt(nowtime.getDate())<10?"0"+nowtime.getDate():nowtime.getDate())+" "+
+      (parseInt(nowtime.getHours())<10?"0"+nowtime.getHours():nowtime.getHours())+":"+
+      (parseInt(nowtime.getMinutes())<10?"0"+nowtime.getMinutes():nowtime.getMinutes())+":"+
+      (parseInt(nowtime.getSeconds())<10?"0"+nowtime.getSeconds():nowtime.getSeconds()));
   }else{
     location_longitude="+"+(file.imageMediaMetadata.location.longitude+"").substring(0,9);
     location_latitude="+"+(file.imageMediaMetadata.location.latitude+"").substring(0,8);
