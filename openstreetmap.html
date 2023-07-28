@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+   <head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <style>
+      html,body {
+        padding: 0;
+        margin: 0;
+      }
+      #myMap {
+        width: 100vw;
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="myMap"></div>
+    <script>
+      const porttype =["地上式單口式","地上打倒安全式(單口)","地上式雙口式","地上打倒安全式(雙口)","地下式單口式","地下式雙口式"]
+
+      google.script.url.getLocation(function(location) {
+        let maplist=JSON.parse(location.parameters.map);
+        // 設定地圖中心點與放大級別
+        const map = L.map("myMap", {
+          center: [maplist[0].a, maplist[0].b],
+          zoom: 19
+        });
+        // 載入圖資
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>         contributors'
+        }).addTo(map);
+        // 彈出視窗
+        for(let i=0;i<maplist.length;i++){
+          L.marker([maplist[i].a, maplist[i].b])
+          .addTo(map)
+          .bindPopup(porttype[maplist[i].c]);
+        }
+      });
+      </script>
+  </body>
+</html>
