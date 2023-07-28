@@ -1806,7 +1806,6 @@ async function latlng_to_tile(x,y){
 //取得地圖照片
 async function getimgfromopenstreet(event,x,y){
   let getimg= await latlng_to_tile(x,y)
-  console.log(getimg);
   var res = await UrlFetchApp.fetch("https://a.tile.openstreetmap.org/17/"+getimg.mapx+"/"+getimg.mapy+".png");
   const imageBlob = await res.getBlob();
   let folder=DriveApp.createFolder("icecubesTemp");
@@ -1846,7 +1845,6 @@ async function getimgfromopenstreet(event,x,y){
     }
   );
   const imgurl = obj.contentUrl.replace(/=s\d+/, "=s" + 256);
-  console.log(imgurl);
   
   botEcho(event.replyToken,[{
         "type": "image",
