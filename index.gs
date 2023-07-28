@@ -2,7 +2,7 @@
 const config = { 
   channelAccessToken: "",
   channelSecret: "",
-  fireport:"1Wu41nX_rqNy3J9A5V0iZQYacCyEISdp1", //消防栓csv檔案 = https://drive.google.com/file/d/1Wu41nX_rqNy3J9A5V0iZQYacCyEISdp1/view?usp=share_link
+  fireport:"1Wu41nX_rqNy3J9A5V0iZQYacCyEISdp1", //消防栓csv檔案   https://drive.google.com/file/d/1Wu41nX_rqNy3J9A5V0iZQYacCyEISdp1/view?usp=share_link
   sendimg:""  //傳送圖片壓日期 權限csv檔案 (可空白)
 
 }
@@ -87,7 +87,7 @@ function doPost(e) {
     if (postback.data.split("&")[0]=== "消防栓地圖"){
       showmap (event,postback.data.split("&")[1],postback.data.split("&")[2],postback.data.split("&")[3],postback.data.split("&")[4]);
     }
-
+    
       
     if (postback.data === "說明")
     {
@@ -105,6 +105,10 @@ function doPost(e) {
 	//return ContentService.createTextOutput(JSON.stringify({'content': 'post ok'})).setMimeType(ContentService.MimeType.JSON);
 }
 
+function doGet(e){
+          return HtmlService.createHtmlOutputFromFile('openstreetmap');
+
+}
 
 //系統顯示
 let showtime =  (event) => {
@@ -343,7 +347,7 @@ let auther = (event) =>{
 }
  //修改浮水印權限
 let changepic=async (event) =>{
-  let testfile=await  DriveApp.getFileById("19usCh247EOl7Ho8Qhwmx7bTYzV5y4gMD");
+  let testfile=await  DriveApp.getFileById(config.sendimg);
   var fileBlob =await testfile.getBlob();
   var alldata =await fileBlob.getDataAsString().split("\r\n");
   var having=false;
@@ -415,7 +419,7 @@ let showmore = async (event,x,y)=>{
   let testfile= DriveApp.getFileById(config.fireport);
   var fileBlob = testfile.getBlob();
   var alldata = fileBlob.getDataAsString().split("\r\n");
-  let longlist=[[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""]];
+  let longlist=[[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0]];
 
   for(let i in alldata){
     let datacontent=alldata[i].split(",");
@@ -427,6 +431,7 @@ let showmore = async (event,x,y)=>{
       longlist[0][2]=getlatlng.lng;
       longlist[0][3]=datacontent[0]+datacontent[1];
       longlist[0][4]=porttype[datacontent[4]];
+      longlist[0][5]=datacontent[4];
       longlist.sort();
     }
     else if(longlist[19][0]>getlinelong ){
@@ -435,9 +440,16 @@ let showmore = async (event,x,y)=>{
       longlist[19][2]=getlatlng.lng;
       longlist[19][3]=datacontent[0]+datacontent[1];
       longlist[19][4]=porttype[datacontent[4]];
+      longlist[19][5]=datacontent[4];
+
       longlist.sort();
     }
   }
+  let map=[];
+  for(let i=10;i<20;i++){
+      map.push({a:Math.round(longlist[i][1]*100000)/100000,b:Math.round(longlist[i][2]*100000)/100000,c:longlist[i][5]});
+  }
+  let show="map="+encodeURI(JSON.stringify(map));
   let moreport= longlist;
 
   botEcho(event.replyToken, [{
@@ -445,6 +457,54 @@ let showmore = async (event,x,y)=>{
         "altText": "消防栓",
         "contents": { "type": "carousel",
           "contents": [
+            {
+              "type": "bubble",
+              "size": "nano",
+              "header": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                  {
+                    "type": "text",
+                    "text": "顯示更多",
+                    "color": "#ffffff",
+                    "align": "start",
+                    "size": "md",
+                    "gravity": "center"
+                  }
+                ],
+                "backgroundColor": "#27D190",
+                "paddingTop": "19px",
+                "paddingAll": "12px",
+                "paddingBottom": "16px"
+              },
+              "body": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                  {
+                    "type": "box",
+                    "layout": "horizontal",
+                    "contents": [
+                      {
+                        "type": "button",
+                        "height": "sm",
+                        "action": {
+                          "type": "uri",
+                          "label": "標記地圖",
+                          "uri": "https://script.google.com/macros/s/AKfycbyywRZqSmvHGnsdbFADVxwwq8PH5z4weqvZm86SzI89dy43QKhO2R0Xeb77DepNADCUKw/exec?"+show
+                        },
+                        "style": "secondary"
+                      }
+                    ],
+                    "flex": 1
+                  }  
+                ],
+                "spacing": "md",
+                "paddingAll": "12px"
+              },
+              "styles": { "footer": { "separator": false } }
+            },
             {
               "type": "bubble",
               "size": "nano",
@@ -957,65 +1017,11 @@ let showmore = async (event,x,y)=>{
                 "paddingAll": "12px"
               },
               "styles": { "footer": { "separator": false } }
-            },{
-              "type": "bubble",
-              "size": "nano",
-              "header": {
-                "type": "box",
-                "layout": "vertical",
-                "contents": [
-                  {
-                    "type": "text",
-                    "text": "No-20",
-                    "color": "#ffffff",
-                    "align": "start",
-                    "size": "md",
-                    "gravity": "center"
-                  }
-                ],
-                "backgroundColor": "#27D190",
-                "paddingTop": "19px",
-                "paddingAll": "12px",
-                "paddingBottom": "16px"
-              },
-              "body": {
-                "type": "box",
-                "layout": "vertical",
-                "contents": [
-                  {
-                    "type": "text",
-                    "text": `${moreport[19][4]}`
-                  },
-
-                  {
-                    "type": "text",
-                    "text": `${Math.round(((moreport[19][0])*111)*1000)} 公尺`
-                  },
-                  {
-                    "type": "box",
-                    "layout": "horizontal",
-                    "contents": [
-                      {
-                        "type": "button",
-                        "height": "sm",
-                        "action": {
-                          "type": "postback",
-                          "label": "顯示地圖",
-                          "data": `消防栓地圖&${moreport[19][1]}&${moreport[19][2]}&No-20&${moreport[19][4]}`
-                        },
-                        "style": "secondary"
-                      }
-                    ],
-                    "flex": 1
-                  }
-                ],
-                "spacing": "md",
-                "paddingAll": "12px"
-              },
-              "styles": { "footer": { "separator": false } }
             }
+
           ] }
-      }]);
+      }
+      ]);
 }
 
 
@@ -1041,7 +1047,8 @@ let getnear =async (replytoken,x,y)=>{
   let testfile=await  DriveApp.getFileById(config.fireport);
   var fileBlob =await testfile.getBlob();
   var alldata =await fileBlob.getDataAsString().split("\r\n");
-  let longlist=[[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""],[0,0,0,"",""]];
+  let longlist=[[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0],[0,0,0,"","",0]];
+
 
   for(let i in alldata){
     let datacontent= alldata[i].split(",");
@@ -1053,6 +1060,7 @@ let getnear =async (replytoken,x,y)=>{
       longlist[0][2]=getlatlng.lng;
       longlist[0][3]=datacontent[0]+datacontent[1];
       longlist[0][4]=porttype[datacontent[4]];
+      longlist[0][5]=datacontent[4];
       longlist.sort();
     }
     else if(longlist[9][0]>getlinelong ){
@@ -1061,16 +1069,85 @@ let getnear =async (replytoken,x,y)=>{
       longlist[9][2]=getlatlng.lng;
       longlist[9][3]=datacontent[0]+datacontent[1];
       longlist[9][4]=porttype[datacontent[4]];
+      longlist[9][5]=datacontent[4];
       longlist.sort();
     }
   }
-
+  let map=[];
+  for(let i=0;i<10;i++){
+      map.push({a:Math.round(longlist[i][1]*100000)/100000,b:Math.round(longlist[i][2]*100000)/100000,c:longlist[i][5]});
+  }
+  let show="map="+encodeURI(JSON.stringify(map));
   let nearport=longlist;
   botEcho(replytoken, [{
         "type": "flex",
         "altText": "消防栓",
         "contents": { "type": "carousel",
           "contents": [
+            {
+              "type": "bubble",
+              "size": "nano",
+              "header": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                  {
+                    "type": "text",
+                    "text": "顯示更多",
+                    "color": "#ffffff",
+                    "align": "start",
+                    "size": "md",
+                    "gravity": "center"
+                  }
+                ],
+                "backgroundColor": "#27D190",
+                "paddingTop": "19px",
+                "paddingAll": "12px",
+                "paddingBottom": "16px"
+              },
+              "body": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                  {
+                    "type": "box",
+                    "layout": "horizontal",
+                    "contents": [
+                      {
+                        "type": "button",
+                        "height": "sm",
+                        "action": {
+                          "type": "postback",
+                          "label": "更多",
+                          "data": `more&${x}&${y}`
+                        },
+                        "style": "secondary"
+                      }
+                    ],
+                    "flex": 1
+                  },{
+                    "type": "box",
+                    "layout": "horizontal",
+                    "contents": [
+                      {
+                        "type": "button",
+                        "height": "sm",
+                        "action": {
+                          "type": "uri",
+                          "label": "標記地圖",
+                          "uri": "https://script.google.com/macros/s/AKfycbyywRZqSmvHGnsdbFADVxwwq8PH5z4weqvZm86SzI89dy43QKhO2R0Xeb77DepNADCUKw/exec?"+show
+                        },
+                        "style": "secondary"
+                      }
+                    ],
+                    "flex": 1
+                  }  
+                ],
+                "spacing": "md",
+                "paddingAll": "12px"
+              },
+              "styles": { "footer": { "separator": false } }
+            },
             {
               "type": "bubble",
               "size": "nano",
@@ -1089,7 +1166,7 @@ let getnear =async (replytoken,x,y)=>{
                 ],
                 "backgroundColor": "#27D190",
                 "paddingTop": "19px",
-                "paddingAll": "12px",
+                "paddingAll": "1px",
                 "paddingBottom": "16px"
               },
               "body": {
@@ -1104,6 +1181,7 @@ let getnear =async (replytoken,x,y)=>{
                   {
                     "type": "text",
                     "text": `${Math.round(((nearport[0][0])*111)*1000)} 公尺`
+
                   },
                   {
                     "type": "box",
@@ -1122,6 +1200,7 @@ let getnear =async (replytoken,x,y)=>{
                     ],
                     "flex": 1
                   }
+                  
                 ],
                 "spacing": "md",
                 "paddingAll": "12px"
@@ -1640,57 +1719,10 @@ let getnear =async (replytoken,x,y)=>{
                 "paddingAll": "12px"
               },
               "styles": { "footer": { "separator": false } }
-            },
-            {
-              "type": "bubble",
-              "size": "nano",
-              "header": {
-                "type": "box",
-                "layout": "vertical",
-                "contents": [
-                  {
-                    "type": "text",
-                    "text": "顯示更多",
-                    "color": "#ffffff",
-                    "align": "start",
-                    "size": "md",
-                    "gravity": "center"
-                  }
-                ],
-                "backgroundColor": "#27D190",
-                "paddingTop": "19px",
-                "paddingAll": "12px",
-                "paddingBottom": "16px"
-              },
-              "body": {
-                "type": "box",
-                "layout": "vertical",
-                "contents": [
-                  {
-                    "type": "box",
-                    "layout": "horizontal",
-                    "contents": [
-                      {
-                        "type": "button",
-                        "height": "sm",
-                        "action": {
-                          "type": "postback",
-                          "label": "更多",
-                          "data": `more&${x}&${y}`
-                        },
-                        "style": "secondary"
-                      }
-                    ],
-                    "flex": 1
-                  }
-                ],
-                "spacing": "md",
-                "paddingAll": "12px"
-              },
-              "styles": { "footer": { "separator": false } }
             }
           ] }
-      }]
+      }
+    ]
   );
 
 }
@@ -1749,6 +1781,85 @@ function twd97_to_latlng($x, $y) {
     lat: $lat,
     lng: $lng
   };
+}
+
+//將經緯度轉成tile
+async function latlng_to_tile(x,y){
+
+  let lon = parseFloat(y);
+  let  lat = parseFloat(x);
+  let  zoom = 17;
+  let  n = 2 ** zoom;
+
+  let  xtile = n * ((lon + 180) / 360);
+  let  ytile = n * (1 - (Math.log(Math.tan(lat * Math.PI / 180) + 1 / Math.cos(lat * Math.PI / 180)) / Math.PI)) / 2;
+
+  return {
+    mapx: Math.floor(xtile),
+    mapy: Math.floor(ytile),
+    imgx: Math.floor(xtile%1*256),
+    imgy: Math.floor(ytile%1*256),
+  };
+
+}
+
+//取得地圖照片
+async function getimgfromopenstreet(event,x,y){
+  let getimg= await latlng_to_tile(x,y)
+  console.log(getimg);
+  var res = await UrlFetchApp.fetch("https://a.tile.openstreetmap.org/17/"+getimg.mapx+"/"+getimg.mapy+".png");
+  const imageBlob = await res.getBlob();
+  let folder=DriveApp.createFolder("icecubesTemp");
+  let filename = {
+    title: "imgaddtext",
+    "parents": [{'id':folder.getId()}],
+  };
+  file = Drive.Files.insert(filename, imageBlob);
+
+  const starttext = {
+    left: (getimg.imgx-30)<1?1:(getimg.imgx-30),
+    top: (getimg.imgy-30)<1?1:(getimg.imgy-30),
+    height:20,
+    width:20
+  };
+  const object = {
+    title: filename.title, // Title of created Slides.
+    width: { unit: "pixel", size: parseInt("256") },
+    height: { unit: "pixel", size:  parseInt("256")},
+  };
+   const presentationId = DocsServiceApp.createNewSlidesWithPageSize(object);
+  const s = SlidesApp.openById(presentationId);
+  const slide = s.getSlides()[0];
+  slide.insertImage(imageBlob);
+ 
+  //正式
+  slide
+    .insertShape(SlidesApp.ShapeType.STAR_12, starttext.left, starttext.top, starttext.width,  starttext.height);
+   
+  s.saveAndClose();
+  const obj = Slides.Presentations.Pages.getThumbnail(
+    presentationId,
+    slide.getObjectId(),
+    {
+      "thumbnailProperties.thumbnailSize": "LARGE",
+      "thumbnailProperties.mimeType": "PNG",
+    }
+  );
+  const imgurl = obj.contentUrl.replace(/=s\d+/, "=s" + 256);
+  console.log(imgurl);
+  
+  botEcho(event.replyToken,[{
+        "type": "image",
+        "originalContentUrl": imgurl,
+        "previewImageUrl": imgurl,
+        "animated": true
+      }]);
+  var file2 = DriveApp.getFileById(presentationId);
+  file2.moveTo(folder);
+  Drive.Files.remove(file.getId());
+  Drive.Files.remove(file2.getId());
+  Drive.Files.remove(folder.getId());
+
 }
 
 //取得照片並浮水印回傳
@@ -1819,7 +1930,7 @@ async function  getmessagecontent(event,messageId){
   const s = SlidesApp.openById(presentationId);
   const slide = s.getSlides()[0];
   slide.insertImage(imageBlob);
-    //加陰影
+  //加陰影
    slide
     .insertTextBox(timetext.text, timetext.left+2, timetext.top+2, timetext.width,  timetext.height)
     .getText()
@@ -1846,6 +1957,7 @@ async function  getmessagecontent(event,messageId){
     .getTextStyle()
     .setForegroundColor(255,255,255)
     .setFontSize(locationtext.fontSize);
+   
   s.saveAndClose();
 
   const obj = Slides.Presentations.Pages.getThumbnail(
@@ -1978,6 +2090,5 @@ function getmessandlocation(event,lat,lng){
         }]);
 
 }
-
 
 
