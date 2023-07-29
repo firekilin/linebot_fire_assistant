@@ -1,4 +1,9 @@
 # linebot_fire_assistant
+# linebot 火災 消防栓助手
+## 可以照教學架設 自己的 google script app應用
+
+20230730 - 更新最近消防栓顯示地圖
+
 
 line bot 利用 google app script 製作消防協助小工具
 
