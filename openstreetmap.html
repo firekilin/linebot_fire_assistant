@@ -12,12 +12,15 @@
         width: 100vw;
         height: 100vh;
       }
+      .bigtext {
+        font-size: 4em;
+      }
     </style>
   </head>
   <body>
     <div id="myMap"></div>
     <script>
-      const porttype =["地上式單口式","地上打倒安全式(單口)","地上式雙口式","地上打倒安全式(雙口)","地下式單口式","地下式雙口式"]
+      const porttype =["地上式單口式","地上打倒安全式(單口)","地上式雙口式","地上打倒安全式(雙口)","地下式單口式","地下式雙口式","目前位置"]
 
       google.script.url.getLocation(function(location) {
         let maplist=JSON.parse(location.parameters.map);
@@ -31,10 +34,13 @@
           attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>         contributors'
         }).addTo(map);
         // 彈出視窗
-        for(let i=0;i<maplist.length;i++){
+        L.marker([maplist[0].a, maplist[0].b])
+          .addTo(map)
+          .bindPopup("<div class='bigtext'>"+porttype[maplist[0].c]+"</div>").openPopup();;
+        for(let i=1;i<maplist.length;i++){
           L.marker([maplist[i].a, maplist[i].b])
           .addTo(map)
-          .bindPopup(porttype[maplist[i].c]);
+          .bindPopup("<div class='bigtext'>"+porttype[maplist[i].c]+"</div>");
         }
       });
       </script>
